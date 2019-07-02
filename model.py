@@ -29,8 +29,12 @@ class Frame:
     def _pad(self,depth):
         return '\n' + ' '*4 * depth
     
+    def __iter__(self): return (i for i in self.nest)
+    
     def __getitem__(self,key):
-        return self.slot[key]
+        if isinstance(key,str): return self.slot[key]
+#         if isinstance(key,int): return self.nest[key]
+        raise SyntaxError(type(key))
     def __setitem__(self,key,that):
         self.slot[key] = that ; return self
     def __lshift__(self,that):
@@ -46,6 +50,10 @@ class Frame:
         return self.nest[-1]
     def dropall(self):
         self.nest = []
+    def dup(self):
+        self // self.top()
+    def drop(self):
+        self.pop()
     
     def eval(self,vm):
         vm // self
@@ -55,6 +63,7 @@ class Symbol(Primitive): pass
 class String(Primitive): pass
 
 class Container(Frame): pass
+class Vector(Container): pass
 class Stack(Container): pass
 class Dict(Container): pass
 
@@ -69,9 +78,10 @@ class Cmd(Active):
         self.fn(vm)
         
 class VM(Active):
-    def __init__(self,V):
-        Active.__init__(self, V)
+#     def __init__(self,V):
+#         Active.__init__(self, V)
 #         self.defs = self
+#         self.use  = [self]
     def __setitem__(self,key,F):
         if callable(F): self[key] = Cmd(F) ; return self 
         else: return Active.__setitem__(self, key, F)
@@ -92,7 +102,7 @@ import ply.lex as lex
 tokens = ['symbol','string']
 
 t_ignore = ' \t\r\n'
-t_ignore_comment = '\#.*'
+t_ignore_comment = r'[#\\].*'
 
 states = (('str','exclusive'),)
 
@@ -110,7 +120,7 @@ def t_str_any(t):
     t.lexer.string += t.value
 
 def t_symbol(t):
-    r'[`]|[^ \t\r\n\#]+'
+    r'[`]|[^ \t\r\n\#\\]+'
     return Symbol(t.value)
 
 def t_ANY_error(t):
@@ -118,7 +128,7 @@ def t_ANY_error(t):
 
 lexer = lex.lex()
 
-vm = VM('metaL')
+vm = VM('metaL') ; vm << vm
 
 def BYE(vm): sys.exit(0)
 vm << BYE
@@ -132,14 +142,31 @@ vm['??'] = Cmd(QQ,True)
 def DROPALL(vm): vm.dropall()
 vm['.'] = DROPALL
 
+def DUP(vm): vm.dup()
+vm << DUP
+
+def DROP(vm): vm.drop()
+vm << DROP
+
+def PUSH(vm): vm.pop() // vm.pop()
+vm['//'] = PUSH
+
 def EQ(vm): addr = vm.pop().val ; vm[addr] = vm.pop()
 vm['='] = EQ 
 
-def VOC(vm): voc = Dict(vm.pop().val) ; vm << voc ; vm // voc 
+def LL(vm): vm.pop() << vm.pop() # target = vm.pop() ; vm // ( target << vm.pop() )
+vm['<<'] = LL
+
+def VOC(vm): voc = Dict(vm.pop().val) ; vm // voc 
 vm << VOC
 
-def DEFINITIONS(vm): vm.defs = vm.pop()
-vm << DEFINITIONS
+# def DEFS(vm): vm.defs = vm.pop()
+# vm << DEFS
+def USE(vm): vm.use.append(vm.top())
+vm << USE 
+
+vm['DEFS'] = vm
+vm['USE'] = ( Vector('search') // vm ) 
 
 def QUOTE(vm): WORD(vm)
 vm['`'] = Cmd(QUOTE,True)
@@ -151,8 +178,13 @@ def WORD(vm):
 
 def FIND(vm):
     token = vm.pop()
-    try: vm // vm[token.val]
-    except KeyError: vm // vm[token.val.upper()]
+    print token
+    for voc in vm['USE']:#.nest:
+        try:
+            vm // voc[token.val]
+            if token.val == '??': print 'x',voc[token.val],vm
+        except KeyError:
+            vm // voc[token.val.upper()] # case fallback
 
 def EVAL(vm): vm.pop().eval(vm)
 
@@ -166,7 +198,7 @@ def GROUP(vm): vm << Group(vm.pop().val)
 vm << GROUP
 
 def CLASS(vm):
-    cls = Class(vm.pop().val) ; vm.defs << cls ; vm // cls
+    cls = Class(vm.pop().val) ; vm['DEFS'] << cls ; vm // cls
 vm << CLASS
 
 def SUPER(vm): sup = vm.pop() ; vm.pop()['super'] = sup

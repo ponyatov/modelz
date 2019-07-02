@@ -4,12 +4,18 @@
 'Dmitry Ponyatov <dponyatov@gmail.com>'								`AUTHOR	 =
 'CC BY-NC-ND'														`LICENSE =
 
-`META voc definitions
+`META voc
+
+	dup metaL <<	\ to global vocabulary
+	dup `DEFS =		\ override current definitions
+	dup USE	  //	\ append to search path
+??
+.
 
 																`frame group
 
-`Frame			class	?? .
-	`Primitive	class	Frame 		super 
+`Frame			class	.
+	`Primitive	class	Frame 		?? super ?? 
 		`Symbol	class	Primitive	super
 		`String	class	Primitive	super
 	`Container	class	Frame 		super
@@ -53,7 +59,8 @@ QQ			fn
 															`compiler group
 
 `VOC			fn
-`DEFINITIONS	fn
+`DEFINE			fn
+`USE			fn
 
 															`interpreter group
 
