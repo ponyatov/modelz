@@ -1,0 +1,57 @@
+
+`model																`MODULE	 =
+??
+'metacircular implementation of a FORTH-like homoiconic language'	`TITLE	 =
+'Dmitry Ponyatov <dponyatov@gmail.com>'								`AUTHOR	 =
+'CC BY-NC-ND'														`LICENSE =
+
+																`frame group
+
+Frame	class
+Symbol	class	Frame	super
+String	class	Frame	super
+
+																`lexer group
+
+`ply.lex `lex as import
+
+																`forth group
+
+`S			stack
+`W			dict
+
+																`debug group
+
+BYE			fn
+Q			fn
+QQ			fn															
+															
+																`stack group
+															
+																`ops group
+
+															`compiler group
+
+															`interpreter group
+
+`QUOTE		fn
+`WORD		fn
+`FIND		fn
+`EVAL		fn
+`INTERPRET	fn
+
+																`init group
+
+																`files group
+
+[
+./model.py
+./model.mel
+./Makefile
+./.gitignore
+./.project
+./.pydevproject
+./.settings/org.eclipse.core.runtime.prefs
+./.settings/org.eclipse.core.resources.prefs
+.externalToolBuilders/model_make.launch
+] file map
