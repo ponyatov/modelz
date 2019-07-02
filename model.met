@@ -1,15 +1,32 @@
 
 `model																`MODULE	 =
-??
 'metacircular implementation of a FORTH-like homoiconic language'	`TITLE	 =
 'Dmitry Ponyatov <dponyatov@gmail.com>'								`AUTHOR	 =
 'CC BY-NC-ND'														`LICENSE =
 
-																`frame group
-
-Frame	class
-Symbol	class	Frame	super
-String	class	Frame	super
+																`frame group ??
+??
+Frame			class
+	Primitive	class	Frame 		super
+		Symbol	class	Primitive	super
+		String	class	Primitive	super
+	Container	class	Frame 		super
+		Stack	class	Container	super
+		Dict	class	Container	super
+		Vector	class	Container	super
+	Active		class	Frame 		super
+		Cmd		class	Active 		super
+		VM		class	Active 		super
+		Seq		class	Active		super
+	IO			class	Frame 		super
+		Dir		class	IO 			super
+		File	class	IO 			super
+	Meta		class	Frame 		super
+		Fn		class	Meta 		super
+		Class	class	Meta 		super
+		Method	class	Fn			super
+		Module	class	Meta 		super
+		Group	class	Meta 		super
 
 																`lexer group
 
@@ -17,8 +34,7 @@ String	class	Frame	super
 
 																`forth group
 
-`S			stack
-`W			dict
+`metaL		VM			vm =
 
 																`debug group
 
@@ -29,6 +45,8 @@ QQ			fn
 																`stack group
 															
 																`ops group
+																
+`EQ			fn			`= =
 
 															`compiler group
 
@@ -39,6 +57,8 @@ QQ			fn
 `FIND		fn
 `EVAL		fn
 `INTERPRET	fn
+
+																`meta group
 
 																`init group
 
