@@ -13,6 +13,9 @@ class Frame:
         return self.dump()
     def dump(self,depth=0,prefix='',voc=True):
         tree = self._pad(depth) + self.head(prefix)
+        if not depth: Frame._dumped = []
+        if self in Frame._dumped: return tree + ' _/'
+        else: Frame._dumped.append(self)
         if voc:
             for i in self.slot:
                 tree += self.slot[i].dump(depth+1,prefix=i+' = ')
@@ -41,6 +44,8 @@ class Frame:
         return self.nest.pop()
     def top(self):
         return self.nest[-1]
+    def dropall(self):
+        self.nest = []
     
     def eval(self,vm):
         vm // self
@@ -64,12 +69,15 @@ class Cmd(Active):
         self.fn(vm)
         
 class VM(Active):
+    def __init__(self,V):
+        Active.__init__(self, V)
+#         self.defs = self
     def __setitem__(self,key,F):
         if callable(F): self[key] = Cmd(F) ; return self 
-        else: return Frame.__setitem__(self, key, F)
+        else: return Active.__setitem__(self, key, F)
     def __lshift__(self,F):
         if callable(F): return self << Cmd(F)
-        else: return Frame.__lshift__(self, F)
+        else: return Active.__lshift__(self, F)
         
 class Seq(Active):
     def eval(self,vm):
@@ -77,6 +85,7 @@ class Seq(Active):
         
 class Meta(Frame): pass
 class Group(Meta): pass
+class Class(Meta): pass
 
 import ply.lex as lex
 
@@ -120,11 +129,20 @@ vm['?'] = Cmd(Q,True)
 def QQ(vm): print vm.dump() ; BYE(vm)
 vm['??'] = Cmd(QQ,True)
 
-def QUOTE(vm): WORD(vm)
-vm['`'] = Cmd(QUOTE,True)
+def DROPALL(vm): vm.dropall()
+vm['.'] = DROPALL
 
 def EQ(vm): addr = vm.pop().val ; vm[addr] = vm.pop()
 vm['='] = EQ 
+
+def VOC(vm): voc = Dict(vm.pop().val) ; vm << voc ; vm // voc 
+vm << VOC
+
+def DEFINITIONS(vm): vm.defs = vm.pop()
+vm << DEFINITIONS
+
+def QUOTE(vm): WORD(vm)
+vm['`'] = Cmd(QUOTE,True)
 
 def WORD(vm):
     token = lexer.token()
@@ -146,6 +164,13 @@ def INTERPRET(vm):
 
 def GROUP(vm): vm << Group(vm.pop().val)
 vm << GROUP
+
+def CLASS(vm):
+    cls = Class(vm.pop().val) ; vm.defs << cls ; vm // cls
+vm << CLASS
+
+def SUPER(vm): sup = vm.pop() ; vm.pop()['super'] = sup
+vm << SUPER
 
 if __name__ == '__main__':
     with open('model.met') as src: lexer.input(src.read())
