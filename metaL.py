@@ -61,6 +61,8 @@ class Frame:
 class Primitive(Frame): pass
 class Symbol(Primitive): pass
 class String(Primitive): pass
+class Number(Primitive): pass
+class Integer(Number): pass
 
 class Container(Frame): pass
 class Vector(Container): pass
@@ -92,6 +94,10 @@ class VM(Active):
 class Seq(Active):
     def eval(self,vm):
         for i in self.nest: i.eval(vm)
+        
+class IO(Frame): pass
+class Dir(IO): pass
+class File(IO): pass
         
 class Meta(Frame): pass
 class Group(Meta): pass
@@ -206,13 +212,20 @@ vm << SUPER
 
 from flask import Flask,render_template
 
-class Web(Frame):
-    def __init__(self,V):
-        Frame.__init__(self, V)
-        self.web = Flask(V)
-        self.web.config['SECRET_KEY'] = os.urandom(32)
-    def eval(self,vm):
+class Net(IO): pass
+class IP(Net): pass
+class Port(Net): pass
+
+class Web(Net):
+    def __init__(self,vm):
+        Frame.__init__(self, vm.val)
+        vm['WEB'] = self
+        self['IP']   = IP('127.0.0.1')
+        self['PORT'] = Port(8888)
         
+        self.web = Flask(vm.val)
+        self.web.config['SECRET_KEY'] = os.urandom(32)
+         
         @self.web.route('/',methods=['GET','POST'])
         def index():
             return render_template('index.html',dump=vm.dump())
@@ -221,18 +234,18 @@ class Web(Frame):
         def dump(word):
             print dump,'<%s>'%word
             return render_template('dump.html',dump=vm[str(word)].dump())
-        
+         
         @self.web.route('/static/<path:path>')
         def file(path):
             print file,'<%s>'%path
             return self.web.send_static_file(path)
-        
-        self.web.run(host='127.0.0.1',port=8888,debug=True)
+         
+        self.web.run(host=self['IP'].val,port=self['PORT'].val,debug=True,extra_files=['metaL.ini'])
 
-def WEB(vm): vm // Web(vm.val)
+def WEB(vm): Web(vm) ; print QQ(vm)
 vm << WEB
 
 if __name__ == '__main__':
-#     with open('metaL.ini') as src: lexer.input(src.read())
-#     INTERPRET(vm)
+    with open('metaL.ini') as src: lexer.input(src.read())
+    INTERPRET(vm)
     WEB(vm) ; EVAL(vm)
