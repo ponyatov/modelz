@@ -204,6 +204,35 @@ vm << CLASS
 def SUPER(vm): sup = vm.pop() ; vm.pop()['super'] = sup
 vm << SUPER
 
+from flask import Flask,render_template
+
+class Web(Frame):
+    def __init__(self,V):
+        Frame.__init__(self, V)
+        self.web = Flask(V)
+        self.web.config['SECRET_KEY'] = os.urandom(32)
+    def eval(self,vm):
+        
+        @self.web.route('/',methods=['GET','POST'])
+        def index():
+            return render_template('index.html',dump=vm.dump())
+        
+        @self.web.route('/dump/<word>')
+        def dump(word):
+            print dump,'<%s>'%word
+            return render_template('dump.html',dump=vm[str(word)].dump())
+        
+        @self.web.route('/static/<path:path>')
+        def file(path):
+            print file,'<%s>'%path
+            return self.web.send_static_file(path)
+        
+        self.web.run(host='127.0.0.1',port=8888,debug=True)
+
+def WEB(vm): vm // Web(vm.val)
+vm << WEB
+
 if __name__ == '__main__':
-    with open('model.met') as src: lexer.input(src.read())
-    INTERPRET(vm)
+#     with open('metaL.ini') as src: lexer.input(src.read())
+#     INTERPRET(vm)
+    WEB(vm) ; EVAL(vm)
