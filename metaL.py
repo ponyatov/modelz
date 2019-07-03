@@ -222,6 +222,7 @@ class Web(Net):
         vm['WEB'] = self
         self['IP']   = IP('127.0.0.1')
         self['PORT'] = Port(8888)
+        self['CSS']  = File('/static/dark.css')
         
         self.web = Flask(vm.val)
         self.web.config['SECRET_KEY'] = os.urandom(32)
@@ -248,4 +249,3 @@ vm << WEB
 if __name__ == '__main__':
     with open('metaL.ini') as src: lexer.input(src.read())
     INTERPRET(vm)
-    WEB(vm) ; EVAL(vm)
