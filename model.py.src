@@ -9,20 +9,27 @@ Frame               class
         String      class   Primitive   isa
         Number      class   Primitive   isa
     Container       class   Frame       isa
-        Group       class   Container   isa
         Vector      class   Container   isa
         Stack       class   Container   isa
         Dict        class   Container   isa
+        Set         class   Container   isa
+        Queue       class   Container   isa
     Active          class   Frame       isa
         Cmd         class   Active      isa
-        VM          clsss   Active      isa
+        VM          class   Active      isa
+        Msg         class   Active      isa
+        Sched       class   Active      isa
     Meta            class   Frame       isa
+        Group       class   Meta        isa
         Module      class   Meta        isa
             Library class   Module      isa
         Class       class   Meta        isa
         Function    class   Meta        isa
             Method  class   Function    isa
         Lang        class   Meta        isa
+    Logic           class   Frame       isa
+        Rel         class   Logic       isa
+        Var         class   Logic       isa
     IO              class   Frame       isa
         Net         class   IO          isa
         DB          class   Frame       isa
@@ -57,7 +64,9 @@ STM32F0                 class   [ CortexM MCU ] isa
         STM32F030F4P6   class   STM32F030       isa
         STM32F030K6T6   class   STM32F030       isa
 STM32F1                 class   STM32F0         isa
-    STM32F103
+    STM32F103           class   STM32F1         isa
+        STM32F105       class   STM32F103       isa
 STM32F4                 class   STM32F1         isa
+    STM32F7             class   STM32F4         isa
 
 MSP430F5418A            class   [ MSP430X MCU ] isa
