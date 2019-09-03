@@ -2,3 +2,62 @@
 \ metamodel
 
 meta model
+
+Frame               class
+    Primitive       class   Frame       isa
+        Symbol      class   Primitive   isa
+        String      class   Primitive   isa
+        Number      class   Primitive   isa
+    Container       class   Frame       isa
+        Group       class   Container   isa
+        Vector      class   Container   isa
+        Stack       class   Container   isa
+        Dict        class   Container   isa
+    Active          class   Frame       isa
+        Cmd         class   Active      isa
+        VM          clsss   Active      isa
+    Meta            class   Frame       isa
+        Module      class   Meta        isa
+            Library class   Module      isa
+        Class       class   Meta        isa
+        Function    class   Meta        isa
+            Method  class   Function    isa
+        Lang        class   Meta        isa
+    IO              class   Frame       isa
+        Net         class   IO          isa
+        DB          class   Frame       isa
+
+    HW              class   Frame       isa
+        Memory      class   HW          isa
+            RAM     class   Memory      isa
+            Flash   class   Memory      isa
+        CPU         class   HW          isa
+            SoC     class   CPU         isa
+            MCU     class   CPU         isa
+        ARCH        class   HW          isa
+            X86     class   ARCH        isa
+            ARM     class   ARCH        isa
+        Periph      class   HW          isa
+            Timer   class   Periph      isa
+            GPIO    class   Periph      isa
+            UART    class   Periph      isa
+            SPI     class   Periph      isa
+            USB     class   Periph      isa
+            Eth     class   Periph      isa
+
+
+CortexM         class   ARM     isa
+    STM32       class   CortexM isa
+
+MSP430          class   ARCH    isa
+    MSP430X     class   MSP430  isa
+
+STM32F0                 class   [ CortexM MCU ] isa
+    STM32F030           class   STM32F0         isa
+        STM32F030F4P6   class   STM32F030       isa
+        STM32F030K6T6   class   STM32F030       isa
+STM32F1                 class   STM32F0         isa
+    STM32F103
+STM32F4                 class   STM32F1         isa
+
+MSP430F5418A            class   [ MSP430X MCU ] isa
