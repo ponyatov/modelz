@@ -11,19 +11,22 @@ meta                                TITLE           !
 https://github.com/ponyatov/model   GITHUB          !
 
 meta module
-    README.md                               file
-    Makefile                                file
-    model.py                                file
-    model.py.log                            file
-    model.py.src                            file
-    .gitignore                              file
+    README.md                               file    README  !
+    Makefile                                file    MK      !
+    model.py                                file    PY      !
+    model.py.log                            file    LOG     !
+    model.py.src                            file    SRC     !
+    .gitignore                              file    GIT     !
     .externalToolBuilders                   dir
-        model_make.launch                   file
+        model_make.launch                   file    //
     .settings                               dir
-        org.eclipse.core.resources.prefs    file
-        org.eclipse.core.runtime.prefs      file
+        org.eclipse.core.resources.prefs    file    //
+        org.eclipse.core.runtime.prefs      file    //
+    .vscode                                 dir
+        settings.json                       file    //
 
 Frame               class
+    Error           class   Frame       isa
     Primitive       class   Frame       isa
         Symbol      class   Primitive   isa
         String      class   Primitive   isa
