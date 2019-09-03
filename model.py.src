@@ -1,5 +1,5 @@
 # model
-\ metamodel
+\ homoiconic metacircular model
 
 meta model
 meta                                TITLE           !
@@ -9,6 +9,19 @@ meta                                TITLE           !
 'Dmitry Ponyatov'                   AUTHOR          !
     dponyatov@gmail.com             EMAIL           //
 https://github.com/ponyatov/model   GITHUB          !
+
+meta module
+    README.md                               file
+    Makefile                                file
+    model.py                                file
+    model.py.log                            file
+    model.py.src                            file
+    .gitignore                              file
+    .externalToolBuilders                   dir
+        model_make.launch                   file
+    .settings                               dir
+        org.eclipse.core.resources.prefs    file
+        org.eclipse.core.runtime.prefs      file
 
 Frame               class
     Primitive       class   Frame       isa
@@ -28,12 +41,14 @@ Frame               class
         Sched       class   Active      isa
     Meta            class   Frame       isa
         Group       class   Meta        isa
+        App         class   Meta        isa
         Module      class   Meta        isa
             Library class   Module      isa
         Class       class   Meta        isa
         Function    class   Meta        isa
             Method  class   Function    isa
         Lang        class   Meta        isa
+        OS          class   Meta        isa
     Logic           class   Frame       isa
         Rel         class   Logic       isa
         Var         class   Logic       isa
@@ -59,6 +74,8 @@ Frame               class
             USB     class   Periph      isa
             Eth     class   Periph      isa
 
+IoT class App isa
+IoD class App isa
 
 CortexM         class   ARM     isa
     STM32       class   CortexM isa
@@ -78,15 +95,20 @@ STM32F4                 class   STM32F1         isa
 
 MSP430F5418A            class   [ MSP430X MCU ] isa
 
-meta module
-    README.md                               file
-    Makefile                                file
-    model.py                                file
-    model.py.log                            file
-    model.py.src                            file
-    .gitignore                              file
-    .externalToolBuilders                   dir
-        model_make.launch                   file
-    .settings                               dir
-        org.eclipse.core.resources.prefs    file
-        org.eclipse.core.runtime.prefs      file
+
+UNIX        class   OS  isa
+    Linux   class   OS  isa
+Windows     class   OS  isa
+MacOS       class   OS  isa
+Android     class   OS  isa
+
+C           class   Lang    isa
+    C89     class   C       isa
+    C99     class   C89     isa
+C++         class   C       isa
+    C++11   class   C++     isa
+Java        class   C       isa
+Python      class   Lang    isa
+    Nim     class   Python  isa
+C#          class   C++     isa
+JS          class   Lang    isa
