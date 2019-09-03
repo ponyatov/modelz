@@ -2,6 +2,13 @@
 \ metamodel
 
 meta model
+meta                                TITLE           !
+'''
+    homoiconic metacircular model
+'''                                 ABOUT           !
+'Dmitry Ponyatov'                   AUTHOR          !
+    dponyatov@gmail.com             EMAIL           //
+https://github.com/ponyatov/model   GITHUB          !
 
 Frame               class
     Primitive       class   Frame       isa
