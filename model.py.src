@@ -70,3 +70,16 @@ STM32F4                 class   STM32F1         isa
     STM32F7             class   STM32F4         isa
 
 MSP430F5418A            class   [ MSP430X MCU ] isa
+
+meta module
+    README.md                               file
+    Makefile                                file
+    model.py                                file
+    model.py.log                            file
+    model.py.src                            file
+    .gitignore                              file
+    .externalToolBuilders                   dir
+        model_make.launch                   file
+    .settings                               dir
+        org.eclipse.core.resources.prefs    file
+        org.eclipse.core.runtime.prefs      file
