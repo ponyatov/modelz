@@ -1,5 +1,4 @@
-MODULE = metaL
-#$(notdir $(CURDIR))
+MODULE = $(notdir $(CURDIR))
 
-$(MODULE).log: $(MODULE).py $(MODULE).ini
-	python $^ > $@ && tail $(TAIL) $@
+$(MODULE).py.log: $(MODULE).py $(MODULE).py.src
+	python $^ && tail $(TAIL) $@
